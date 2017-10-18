@@ -1,6 +1,6 @@
 Introduction
 
-This application sends personalized discount emails to the subscribed user based on the current weather.
+This application sends personalized discount emails to the subscribed user based on the current weather of user’s location.
 
 
 Tech Stack
@@ -13,15 +13,18 @@ Tech Stack
 
 System Design
 
-- As a best practice, the UI layer is keep away from the backend. If in future the code has to be extended to mobile apps and for integration. The REST API can be used to develop on top of it.
+- As a best practice, the UI layer is kept away from the backend. If in future the code can be extended to mobile apps and for integration with other systems. The REST API can be used to develop on top of it.
 
-- Django rest framework is used in the backend for all the CRUD and db interactions
+- Django rest framework is used in the backend for all the CRUD and DB interactions
 
 - As mentioned in the specification Wunderground API has been used to get the details of the current weather and historical data to come up with the personalized message for the users
 
+- The current timezone of the user based on location is fetched from Wunderground API and stored as part of the db model to improve performance. This field is widely used to send of email based on timezone
+
 - For email notification SendGrid has been used. SendGrid provides python API interface to send out emails
 
-- Each of the modules has been separated out and exposed an an REST API. Details of APIs is listed below in   the API documentation section
+- Each of the modules has been separated out and exposed as  REST API. Details of APIs is listed below in   the API documentation section
+
 
 -----------------------------------------------------------------------------------------------
 
@@ -29,11 +32,11 @@ How it is Designed ?
 
 Security
 
-- Validations is taken care in the frontend and in the backend to handle proper user input
+- Validations are taken care in the frontend and in the backend to handle proper user input
 
-- The Django emailField is used in the backend with validations all the invalid email inputs and the http response code of the REST API is used to validate the frontend forms
+- The Django emailField is used in the backend to validate all the invalid email inputs and the http response code of the REST API is used to validate the frontend forms
 
-- In the future sense, each user can have a separate personalized page and should be give privileged to select the discount notification he/she has to receive
+- In the future, each user can have a separate personalized page and should be give privileged to select the discount notification he/she has to receive
 
 Re-Usability
 
@@ -47,7 +50,7 @@ Re-Inventing the Wheel?
 
 Usability
 
-- The app by default simpler and provides easy-of-use. Just in matter of time the user can subscription to location
+- The app by default is simple and provides easy-of-use. Just in matter of time the user can subscription to location
 
 - To improve the current app, instead of having a list of values for selecting locations, a map can be displayed, so it will be easier for the user to visualize straight away
 
@@ -63,7 +66,22 @@ Email Script
 - The cron job can run every morning multiple time in one hour interval for each of the timezone so that all the timezones are covered.
 
 -----------------------------------------------------------------------------------------------
+Db model
 
+- City
+    - id
+    - name
+    - state
+    - population
+    - growth
+
+- User
+  - email
+  - cityId - fk
+  - timezone
+  - creationTime
+
+-----------------------------------------------------------------------------------------------
 REST API Documentation
 
 - http://<hostname:port>/klaviyo-weather/api/users
