@@ -9,7 +9,22 @@ Tech Stack
 - ReactJS as frontend
 
 -----------------------------------------------------------------------------------------------
+Installation
 
+requirements - python 2.7, pip, npm
+
+Django-rest
+- Under folder klaviyo_weather_backend is the Django backend
+- cd to klaviyo_weather_backend
+- pip install -r requirements.txt
+- python manage.py runserver
+
+ReactJS
+- Under folder klaviyo_weather_ui is the ReactJS frontend
+- cd to klaviyo_weather_ui
+- npm install to install dependencies
+- npm start
+-----------------------------------------------------------------------------------------------
 
 System Design
 
