@@ -25,6 +25,11 @@ api_key=settings.API_KEY
 condition_url="http://api.wunderground.com/api/" +api_key+ "/conditions/q/"
 planner_url="http://api.wunderground.com/api/" +api_key+ "/planner_"
 
+
+'''
+API class for creating and lisiting users
+'''
+
 class UserList(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     model = User
@@ -57,12 +62,21 @@ class UserList(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+'''
+API class for getting cities
+'''
+
 class CityList(viewsets.ModelViewSet):
     serializer_class = CitySerializer
     model = City
     def get_queryset(self):
         return City.objects.all()
 
+
+'''
+Message object to be passed to serialized
+'''
 
 class Message(object):
     def __init__(self, city,state,subject, body, icon_url,avg):
@@ -72,6 +86,15 @@ class Message(object):
         self.body = body
         self.icon_url = icon_url
         self.avg = avg
+
+'''
+Return message objects for a city. Historical average is calculated
+and compared with current weather to return the correct message
+
+It's nice out! Enjoy a discount on us. - if 5 degree warmer
+Not so nice out? That's okay, enjoy a discount on us. - if 5 degree colder
+Enjoy a discount on us. - if nothing else
+'''
 
 def getMessage(city_data):
     name = city_data[0].name
@@ -114,6 +137,11 @@ def getMessage(city_data):
     message = Message(name, state, subject=msg_subject, body=msg_body, icon_url=icon_url, avg=final_avg)
     return message
 
+
+'''
+Method to send out email. This method uses SendGrid API inturn
+'''
+
 def sendEmail(to,message):
     sg = sendgrid.SendGridAPIClient(apikey=settings.SEND_GRID_KEY)
     from_email = Email("klaviyo@example.com")
@@ -133,6 +161,9 @@ def sendEmail(to,message):
     print(response.body)
     print(response.headers)
 
+'''
+API class view personalized message for a city.
+'''
 
 class UserMessage(APIView):
 
@@ -149,6 +180,11 @@ class UserMessage(APIView):
             return_data={}
             return_data['cityId']=["cityId is required"]
             return Response(return_data,status=status.HTTP_400_BAD_REQUEST)
+
+
+'''
+API class to send out email. This is exposed as REST API
+'''
 
 class EmailAPI(APIView):
     def post(self, request, format=None):
