@@ -25,7 +25,7 @@ System Design
 
 -----------------------------------------------------------------------------------------------
 
-How the it is Designed ?
+How it is Designed ?
 
 Security
 
